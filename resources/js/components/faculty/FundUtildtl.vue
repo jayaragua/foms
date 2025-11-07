@@ -987,9 +987,10 @@
 
                 date: null,
                 menuadd: false,
+                pickerDate: '1995-1-1',
                 menuedit: false,
                 menueditApp:false,
-                pickerDate: '1995-1-1',
+                
 
                  showDeleteModal:false,
 

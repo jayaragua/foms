@@ -1,10 +1,10 @@
 <template>
 
-<div class="container-fluid">
+<!-- <div class="container-fluid"> -->
       <v-app>
        <br>
       
-       <div v-if="isprint===false" id="non-printable1">
+       <div>
            <h3 class="title text-center">Trip Tickets</h3>
             
                      <v-banner
@@ -14,7 +14,7 @@
                                                 <div style="text-align:Left !important;">
                                                          
                                                              <v-btn
-                                                                    @click="ShowAddEquipment=true"
+                                                                    @click="ShowAddTripTicket=true"
                                                                       depressed
                                                                       color="primary"
                                                                         > 
@@ -47,23 +47,13 @@
                                 </v-row>
 
 
-                                
-                             
-
-                                <!-- <v-data-table 
-                                            
-                                             v-model="selected"
-                                            :headers="headers"
-                                            :items="TripTicketlist"
-                                           
-                                            :search="search"
-                                            class="elevation-1 pa-2"
-                                            item-key="Equip_id"
-                                            > -->
 
                                 <v-data-table
                                             :headers="headers"
                                             :items="TripTicketlist"
+                                            :search="search"
+                                            :items-per-page="20" 
+                                            class="elevation-1 pa-2"
                                             >
 
                                             <template v-slot:item.EquipStatus="{ item }"> 
@@ -85,7 +75,13 @@
                                                       
                                                                 icon
                                                                 small
-                                                                @click="showEditingModal(item.Equip_id,item.EquipType,item.EquipTimes,item.EquipBalTank,item.EquipStatus)"
+                                                                @click="showEditingModal(item.TripT_id,item.Trip_Date,item.Product,item.VehType,item.VehPlateNum,
+                                                                item.VehModel,item.DriversName,item.VehOffice,item.AuthPassName,item.PlaceVisit,
+                                                                item.Purpose,item.TimeDeparture,item.TimeArr,item.DepartTime,item.ArrivalTime,
+                                                                item.DisTravel,item.BalTank,item.IssuedOffice,item.GearOil,item.LubriOil,
+                                                                item.Greased,item.Brake_fluid,item.SpeedoBTrip,item.SpeedoETrip,item.DistanceTraveled,item.Remarks
+                                                                ,item.Prod_id,item.Driver_id,item.Equip_id, item.AddPurchase)"
+
                                                                 class="mr-2"
                                                                 color="blue"
                                                                 >
@@ -96,7 +92,7 @@
                                                        
                                                                 icon
                                                                 small
-                                                                @click="showDeletingModal(item.Equip_id)"
+                                                                @click="showDeletingModal(item.TripT_id)"
                                                                 class="mr-2"
                                                                 color="pink"
                                                                 >
@@ -111,13 +107,13 @@
             </v-row> -->
  
             </div>
-            
 
 
-            <Modal v-model="ShowAddEquipment" width="600">
+
+             <Modal v-model="ShowAddTripTicket" width="1200">
 
                                     <div>
-                                        <p class="subtitle" style="text-align:center"><span><b>  Add Equipment</b></span></p>
+                                        <p class="subtitle" style="text-align:center"><span><b>  Add Trip Ticket</b></span></p>
                                     </div>
                                       <br>
                                         <br>
@@ -129,67 +125,749 @@
                                                                    
                                                                     <v-row>
                                                                         <v-col  cols="12"
-                                                                            sm="8"
-                                                                            md="8">
-                                                                                
-                                                                                <v-text-field
-                                                                                    label="Equipment Type"
-                                                                                    v-model="equip.EquipType"
-                                                                                    outlined
-                                                                                    dense
-                                                                                    required
-                                                                                ></v-text-field> 
-                                                                        </v-col>
-                                                                   
-                                                                        <v-col
-                                                                            cols="12"
                                                                             sm="4"
-                                                                            md="4"
-                                                                            >
-                                                                            <v-text-field
-                                                                                outlined
-                                                                                type="number"
-                                                                                dense
-                                                                                 v-model="equip.EquipTime"
-                                                                               
-                                                                                clear-icon="mdi-close-circle"
-                                                                                label="Times"
+                                                                            md="4">
+                                                                            <p class="text-md-left">
+                                                                            To be filled by the Administrative Official
+                                                                            </p> <hr>
+                                                                                
+                                                                                <v-menu
+                                                                                    ref="menuadd"
+                                                                                    v-model="menuadd"   
+                                                                                    :close-on-content-click="false"
+                                                                                    
+                                                                                    transition="scale-transition"
+                                                                                    offset-y
+                                                                                    min-width="auto"
                                                                                 >
-                                                                            </v-text-field>
+                                                                                    <template v-slot:activator="{ on, attrs }">
+                                                                                    <v-text-field
+                                                                                    
+                                                                                        v-model="TripTicket.Trip_Date"
+
+                                                                                        outlined
+                                                                                        label="Date"
+                                                                                        prepend-icon="mdi-calendar"
+                                                                                        @click="getProduct()"
+                                                                                        readonly
+                                                                                        dense
+                                                                                        v-bind="attrs"
+                                                                                        v-on="on"
+                                                                                    ></v-text-field>
+                                                                                    </template>
+                                                                                    <v-date-picker
+                                                                                    v-model="TripTicket.Trip_Date"
+                                                                                    
+                                                                                    no-title
+                                                                                    scrollable
+                                                                                    >
+                                                                                    <v-spacer></v-spacer>
+                                                                                    <v-btn
+                                                                                        text
+                                                                                        color="primary"
+                                                                                        @click="menuadd = false"
+                                                                                    >
+                                                                                        Cancel
+                                                                                    </v-btn>
+                                                                                    <v-btn
+                                                                                        text
+                                                                                        color="primary"
+                                                                                        @click="$refs.menuadd.save(date)"
+                                                                                    >
+                                                                                        OK
+                                                                                    </v-btn>
+                                                                                    </v-date-picker>
+                                                                                </v-menu>
                                                                         </v-col>
 
+                                                                        <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                                <p class="text-md-left">
+                                                                                    To be filled by the Driver
+                                                                                </p> <hr>
+
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeDept"
+                                                                                        v-model="modalDept"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                         
+                                                                                            v-model="TripTicket.TimeDeparture"
+                                                                                            label="1. Time of Departure"
+                                                                                            :disabled = "!TripTicket.Purpose"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                       
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripTicket.TimeDeparture"
+                                                                                        
+                                                                                        full-width
+                                                                                       
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalDept = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeDept.save(TripTicket.TimeDeparture)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                    <br>
+                                                                                    <p class="text-md-left">
+                                                                                   
+                                                                                </p> <hr>
+                                                                                        
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="9. Greased"
+                                                                                                v-model="TripTicket.Greased"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+
+
+                                                                             
+                                                                   
                                                                     </v-row>
 
                                                                      <v-row style="margin-top:-30px;">
-                                                                        <v-col
-                                                                            cols="12"
-                                                                            sm="12"
-                                                                            md="12"
-                                                                            >
-                                                                            <!-- <v-text-field
-                                                                                type="number"
-                                                                                label="Balance in Tank" 
-                                                                                 v-model="EquipBal"  
-                                                                                 suffix="L"                                                                                 
-                                                                                outlined
-                                                                                dense
-                                                                                required
-                                                                            ></v-text-field>  -->
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                                <v-select
+                                                                                        v-model="TripTicket.Prod_id"
+                                                                                        :items="ProductList"
+                                                                                        @click="getDriver()"
+                                                                                        color="pink"
+                                                                                        :disabled="!TripTicket.Trip_Date"
+                                                                                        dense
+                                                                                        outlined
+                                                                                        item-value = "Prod_id"
+                                                                                        item-text = "Product"
+                                                                                        label="Product"
+                                                                                        required>
+                                                                                </v-select>
+                                                                            </v-col>
 
-                                                                            <vuetify-money
-                                                        
-                                                                                    label="Balance in Tank"
-                                                                                     v-model="equip.EquipBal"  
-                                                                                    
-                                                                                    dense
-                                                                                    outlined
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                               
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeArr"
+                                                                                        v-model="modalArr"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                            :disabled = "!TripTicket.TimeDeparture"
+                                                                                            v-model="TripTicket.TimeArr"
+                                                                                            label="2. Time of Arrival"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                       
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripTicket.TimeArr"
+                                                                                        full-width
+                                                                                        :min="TripTicket.TimeDeparture"
+                                                                                        
+                                                                                       
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalArr = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeArr.save(TripTicket.TimeArr)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="10. Brake Fluid"
+                                                                                                v-model="TripTicket.Brake_fluid"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
                                                                             
-                                                                                
-                                                                                    :rules="[numberRule]"
-                                                                                    v-bind:options="options"
-                                                                                    />
-                                                                        </v-col>
+
+                                                                      
                                                                     </v-row>
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                                <v-select
+                                                                                        v-model="TripTicket.Driver_id"
+                                                                                        :items="DriverList"
+                                                                                        :disabled="!TripTicket.Prod_id"
+                                                                                        color="pink"
+                                                                                        dense
+                                                                                        @click="getVehicle()"
+                                                                                        item-value = "Driver_id"
+                                                                                        item-text = "DriversName"
+                                                                                        outlined
+                                                                                        label="Driver's Name"
+                                                                                        required>
+                                                                                </v-select>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                               
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeDeptBack"
+                                                                                        v-model="modalDeptBack"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                            :disabled = "!TripTicket.TimeArr"
+                                                                                            v-model="TripTicket.DepartTime"
+                                                                                            label="3. Time of Depart"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                        
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripTicket.DepartTime"
+                                                                                        full-width
+                                                                                        :min="TripTicket.TimeArr"
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalDeptBack = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeDeptBack.save(TripTicket.DepartTime)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        
+                                                                                        <span>11. Speedometer Readings, if any</span>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                                <!-- <v-select
+                                                                                        v-model="TripTicket.Equip_id"
+                                                                                        :items="VechicleList"
+                                                                                        color="pink"
+                                                                                        dense
+                                                                                        outlined
+                                                                                        item-value = "Veh_id"
+                                                                                        item-text = `VehType, VehPlateNum `
+                                                                                        label="Equipment"
+                                                                                        required>
+                                                                                        <template slot="selection" slot-scope="data">
+                                                                                            {{ data.item.Veh_id }} {{ data.item.VehType }}
+                                                                                        </template>
+                                                                                </v-select> -->
+
+                                                                                    <Select @input="getPlaceVisited()"  clearable  v-model="TripTicket.Equip_id" filterable size="large" placeholder="Select Vehicle">
+                                                                                            <Option  v-for="veclist in VechicleList" :value="veclist.Veh_id" :key="veclist.Veh_id">{{veclist.VehFuelCap}}Liters - {{ veclist.VehPlateNum }} - {{ veclist.VehModel }} - {{ veclist.VehType }} - {{ veclist.VehOffice }}  </Option>
+                                                                                    </Select>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                               
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeArrBack"
+                                                                                        v-model="modalArrBack"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                            :disabled = "!TripTicket.DepartTime"
+                                                                                            v-model="TripTicket.ArrivalTime"
+                                                                                            label="4. Time of Arrival Back"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                       
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripTicket.ArrivalTime"
+                                                                                        full-width
+                                                                                        :min="TripTicket.DepartTime"
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalArrBack = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeArrBack.save(TripTicket.ArrivalTime)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="Beginning Trip"
+                                                                                                v-model="TripTicket.SpeedoBTrip"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+
+                                                                     <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-text-field
+                                                                                    v-model="TripTicket.AuthPassName"
+                                                                                    :disabled="!TripTicket.Equip_id"
+                                                                                    
+                                                                                    label="Name(s) of Authorized Passengers"
+                                                                                    outlined
+                                                                                    clearable
+                                                                                    dense
+                                                                                ></v-text-field>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-text-field class="subtitle"
+                                                                                    v-model="TripTicket.DisTravel"
+                                                                                    label="5. Approximate Distance Travel (km)"
+                                                                                    disabled
+                                                                                    clearable
+                                                                                    right
+                                                                                    dense
+                                                                                ></v-text-field>
+                                                                            </v-col>
+
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="End Trip"
+                                                                                                v-model="TripTicket.SpeedoETrip"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <Select   clearable  :disabled="!TripTicket.AuthPassName" v-model="TripTicket.PlaceVisit" filterable size="large" placeholder="Place(s) to be Visited/Inspected">
+                                                                                        <Option  v-for="semlist in VisitedList" :value="semlist.PlaceName" :key="semlist.PlaceName">{{ semlist.PlaceName}}</Option>
+                                                                                </Select>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-text-field
+                                                                                   
+                                                                                    label="6. Gas Issued, Purchase & Consumed (L)"
+                                                                                    disabled
+                                                                                    clearable
+                                                                                    right
+                                                                                    dense
+                                                                                ></v-text-field>
+                                                                            </v-col>
+
+                                                                             <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="Distance Traveled"
+                                                                                                v-model="TripTicket.DistanceTraveled"
+                                                                                                @value = "DistTravel"  
+                                                                                                disabled = true
+                                                                                                outlined
+                                                                                                dense
+                                                                                              
+                                                                                                v-bind:options="optionDistTravel"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-textarea
+                                                                                         v-model="TripTicket.Purpose"
+                                                                                        label="Purposes"
+                                                                                        auto-grow
+                                                                                        outlined
+                                                                                        :disabled="!TripTicket.PlaceVisit"
+                                                                                        dense
+                                                                                        rows="1"
+                                                                                       
+                                                                                        >
+                                                                                </v-textarea>
+                                                                            </v-col>
+                                                                       
+                                                                            <v-col
+                                                                                        cols="12"
+                                                                                        sm="4"
+                                                                                        md="4"
+                                                                                        >
+                                                                                   
+                                                                                    <v-text-field
+                                                                                            
+                                                                                             v-model="TripTicket.BalTank"
+                                                                                            label="a. Balance in Tank"
+                                                                                            disabled
+                                                                                            clearable
+                                                                                            outlined
+                                                                                            right
+                                                                                            dense
+                                                                                        ></v-text-field>
+                                                                            </v-col>
+
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                       <v-textarea
+                                                                                                v-model="TripTicket.Remarks"
+                                                                                                label="Remarks"
+                                                                                                auto-grow
+                                                                                                outlined
+                                                                                                rows="3"
+                                                                                              
+                                                                                                >
+                                                                                        </v-textarea>
+                                                                                </v-col>
+                                                                     
+                                                                    </v-row>
+                                                                      
+                                                                    <v-row style="margin-top:-80px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col 
+                                                                                  
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        <span style="color:RED; !important"><b> *{{timesPerVeh}}</b></span>
+                                                                                        <v-text-field 
+                                                                                                label="b. Issued by Office"
+                                                                                                v-model="TripTicket.IssuedOffice" 
+                                                                                                :disabled="!TripTicket.ArrivalTime"
+                                                                                                @input="getAppTTravel()" 
+                                                                                                outlined
+                                                                                                type="number"
+                                                                                                required
+                                                                                                :rules="[numberRule]">
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-40px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        <span style="color:RED; !important"><b> *{{timesPerVeh}}</b></span>
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="c. Add Purchase *"
+                                                                                                v-model="TripTicket.AddPurchase"  
+                                                                                                :disabled="!TripTicket.IssuedOffice"
+                                                                                                outlined
+                                                                                                @input="getAppTTravel()"
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-40px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        <span><b> TOTAL </b></span>
+                                                                                        <v-text-field class="title"
+                                                                                              
+                                                                                                :value="totalTrip"
+                                                                                                disabled
+                                                                                                
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-10px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                     <v-text-field
+                                                                                            
+                                                                                            v-model="TripTicket.IssuedOffice"  
+                                                                                            label="d. Deduct"
+                                                                                            disabled
+                                                                                            outlined
+                                                                                            right
+                                                                                            dense
+                                                                                        ></v-text-field>
+                                                                                       
+                                                                                </v-col>
+                                                                    </v-row>
+                                                                    <v-row style="margin-top:-40px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                     <v-text-field
+                                                                                            v-model="TripTicket.BalTank"
+                                                                                            label="e. Balance"
+                                                                                            disabled
+                                                                                            outlined
+                                                                                            right
+                                                                                            dense
+                                                                                        ></v-text-field>
+                                                                                       
+                                                                                </v-col>
+                                                                    </v-row>
+                                                                  
+
+                                                                    
                                                          </v-card-text>
                                                     
                                                 </v-card>
@@ -201,20 +879,17 @@
                                 
                                         <div slot="footer" class="text-right">
                                                 <b-button @click="cancelItems" type="is-danger">CANCEL</b-button>
-                                                 <b-button :disabled="disabledSavedBtn" @click="SaveEquipment"
+                                                 <b-button :disabled="disabledSavedBtn" @click="SaveTripTicket"
                                                      type="is-info">SAVE </b-button>
                                         </div>
              
-                        
-                         
-                        
             </Modal>
 
 
-            <Modal v-model="ShowEditEquipment" width="600">
+             <Modal v-model="ShowEditTripTicket" width="1200">
 
                                     <div>
-                                        <p class="subtitle" style="text-align:center"><span><b>  Edit Equipment</b></span></p>
+                                        <p class="subtitle" style="text-align:center"><span><b>  Edit Trip Ticket</b></span></p>
                                     </div>
                                       <br>
                                         <br>
@@ -226,58 +901,749 @@
                                                                    
                                                                     <v-row>
                                                                         <v-col  cols="12"
-                                                                            sm="8"
-                                                                            md="8">
-                                                                                
-                                                                                <v-text-field
-                                                                                    label="Equipment Type"
-                                                                                    v-model="equipEdit.EquipType"
-                                                                                    outlined
-                                                                                    dense
-                                                                                    required
-                                                                                ></v-text-field> 
-                                                                        </v-col>
-                                                                   
-                                                                        <v-col
-                                                                            cols="12"
                                                                             sm="4"
-                                                                            md="4"
-                                                                            >
-                                                                            <v-text-field
-                                                                                outlined
-                                                                                type="number"
-                                                                                dense
-                                                                                 v-model="equipEdit.EquipTime"
-                                                                               
-                                                                                clear-icon="mdi-close-circle"
-                                                                                label="Times"
+                                                                            md="4">
+                                                                            <p class="text-md-left">
+                                                                            To be filled by the Administrative Official
+                                                                            </p> <hr>
+                                                                                
+                                                                                <v-menu
+                                                                                    ref="menuEdit"
+                                                                                    v-model="menuEdit"   
+                                                                                    :close-on-content-click="false"
+                                                                                    
+                                                                                    transition="scale-transition"
+                                                                                    offset-y
+                                                                                    min-width="auto"
                                                                                 >
-                                                                            </v-text-field>
+                                                                                    <template v-slot:activator="{ on, attrs }">
+                                                                                    <v-text-field
+                                                                                    
+                                                                                        v-model="TripEditTicket.Trip_Date"
+
+                                                                                        outlined
+                                                                                        label="Date"
+                                                                                        prepend-icon="mdi-calendar"
+                                                                                        @click="getProduct()"
+                                                                                        readonly
+                                                                                        dense
+                                                                                        v-bind="attrs"
+                                                                                        v-on="on"
+                                                                                    ></v-text-field>
+                                                                                    </template>
+                                                                                    <v-date-picker
+                                                                                    v-model="TripEditTicket.Trip_Date"
+                                                                                    
+                                                                                    no-title
+                                                                                    scrollable
+                                                                                    >
+                                                                                    <v-spacer></v-spacer>
+                                                                                    <v-btn
+                                                                                        text
+                                                                                        color="primary"
+                                                                                        @click="menuEdit = false"
+                                                                                    >
+                                                                                        Cancel
+                                                                                    </v-btn>
+                                                                                    <v-btn
+                                                                                        text
+                                                                                        color="primary"
+                                                                                        @click="$refs.menuEdit.save(date)"
+                                                                                    >
+                                                                                        OK
+                                                                                    </v-btn>
+                                                                                    </v-date-picker>
+                                                                                </v-menu>
                                                                         </v-col>
 
+                                                                        <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                                <p class="text-md-left">
+                                                                                    To be filled by the Driver
+                                                                                </p> <hr>
+
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeDept"
+                                                                                        v-model="modalDept"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                         
+                                                                                            v-model="TripEditTicket.TimeDeparture"
+                                                                                            label="1. Time of Departure"
+                                                                                            :disabled = "!TripEditTicket.Purpose"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                       
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripEditTicket.TimeDeparture"
+                                                                                        
+                                                                                        full-width
+                                                                                       
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalDept = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeDept.save(TripEditTicket.TimeDeparture)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                    
+                                                                                    <p class="text-md-right title">
+                                                                                            <b> Ticket #: {{TripEditTicket.TripT_id}}</b>
+                                                                                </p> <hr>
+                                                                                        
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="9. Greased"
+                                                                                                v-model="TripEditTicket.Greased"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+
+
+                                                                             
+                                                                   
                                                                     </v-row>
 
                                                                      <v-row style="margin-top:-30px;">
-                                                                        <v-col
-                                                                            cols="12"
-                                                                            sm="12"
-                                                                            md="12"
-                                                                            >
-                                                                       
-                                                                            <vuetify-money
-                                                        
-                                                                                    label="Balance in Tank"
-                                                                                     v-model="equipEdit.EquipBal"  
-                                                                                    
-                                                                                    dense
-                                                                                    outlined
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                                <v-select
+                                                                                        v-model="TripEditTicket.Prod_id"
+                                                                                        :items="ProductList"
+                                                                                        @click="getDriver()"
+                                                                                        color="pink"
+                                                                                        :disabled="!TripEditTicket.Trip_Date"
+                                                                                        dense
+                                                                                        outlined
+                                                                                        item-value = "Prod_id"
+                                                                                        item-text = "Product"
+                                                                                        label="Product"
+                                                                                        required>
+                                                                                </v-select>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                               
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeArr"
+                                                                                        v-model="modalArr"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                            :disabled = "!TripEditTicket.TimeDeparture"
+                                                                                            v-model="TripEditTicket.TimeArr"
+                                                                                            label="2. Time of Arrival"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                       
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripEditTicket.TimeArr"
+                                                                                        full-width
+                                                                                        :min="TripEditTicket.TimeDeparture"
+                                                                                        
+                                                                                       
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalArr = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeArr.save(TripEditTicket.TimeArr)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="10. Brake Fluid"
+                                                                                                v-model="TripEditTicket.Brake_fluid"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
                                                                             
-                                                                                
-                                                                                    :rules="[numberRule]"
-                                                                                    v-bind:options="options"
-                                                                                    />
-                                                                        </v-col>
+
+                                                                      
                                                                     </v-row>
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                                <v-select
+                                                                                        v-model="TripEditTicket.Driver_id"
+                                                                                        :items="DriverList"
+                                                                                        :disabled="!TripEditTicket.Prod_id"
+                                                                                        color="pink"
+                                                                                        dense
+                                                                                        @click="getVehicle()"
+                                                                                        item-value = "Driver_id"
+                                                                                        item-text = "DriversName"
+                                                                                        outlined
+                                                                                        label="Driver's Name"
+                                                                                        required>
+                                                                                </v-select>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                               
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeDeptBack"
+                                                                                        v-model="modalDeptBack"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                            :disabled = "!TripEditTicket.TimeArr"
+                                                                                            v-model="TripEditTicket.DepartTime"
+                                                                                            label="3. Time of Depart"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                        
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripEditTicket.DepartTime"
+                                                                                        full-width
+                                                                                        :min="TripEditTicket.TimeArr"
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalDeptBack = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeDeptBack.save(TripEditTicket.DepartTime)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        
+                                                                                        <span>11. Speedometer Readings, if any</span>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                                <!-- <v-select
+                                                                                        v-model="TripTicket.Equip_id"
+                                                                                        :items="VechicleList"
+                                                                                        color="pink"
+                                                                                        dense
+                                                                                        outlined
+                                                                                        item-value = "Veh_id"
+                                                                                        item-text = `VehType, VehPlateNum `
+                                                                                        label="Equipment"
+                                                                                        required>
+                                                                                        <template slot="selection" slot-scope="data">
+                                                                                            {{ data.item.Veh_id }} {{ data.item.VehType }}
+                                                                                        </template>
+                                                                                </v-select> -->
+
+                                                                                    <Select @input="getPlaceVisited()"  clearable  v-model="TripEditTicket.Equip_id" filterable size="large" placeholder="Select Vehicle">
+                                                                                            <Option  v-for="veclist in VechicleList" :value="veclist.Veh_id" :key="veclist.Veh_id">{{veclist.VehFuelCap}}Liters - {{ veclist.VehPlateNum }} - {{ veclist.VehModel }} - {{ veclist.VehType }} - {{ veclist.VehOffice }}  </Option>
+                                                                                    </Select>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                               
+                                                                                    <v-dialog
+                                                                                        ref="dialogTimeArrBack"
+                                                                                        v-model="modalArrBack"
+                                                                                        :return-value.sync="time"
+                                                                                        persistent
+                                                                                        width="290px"
+                                                                                    >
+                                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                                        <v-text-field
+                                                                                            :disabled = "!TripEditTicket.DepartTime"
+                                                                                            v-model="TripEditTicket.ArrivalTime"
+                                                                                            label="4. Time of Arrival Back"
+                                                                                            prepend-icon="mdi-clock-time-four-outline"
+                                                                                            readonly
+                                                                                            v-bind="attrs"
+                                                                                            outlined
+                                                                                            dense
+                                                                                            v-on="on"
+                                                                                            type="time"
+                                                                                        ></v-text-field>
+                                                                                        </template>
+                                                                                       
+                                                                                        <v-time-picker
+                                                                                        ampm-in-title
+                                                                                        v-model="TripEditTicket.ArrivalTime"
+                                                                                        full-width
+                                                                                        :min="TripEditTicket.DepartTime"
+                                                                                        >
+                                                                                        <v-spacer></v-spacer>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="modalArrBack = false"
+                                                                                        >
+                                                                                            Cancel
+                                                                                        </v-btn>
+                                                                                        <v-btn
+                                                                                            text
+                                                                                            color="primary"
+                                                                                            @click="$refs.dialogTimeArrBack.save(TripEditTicket.ArrivalTime)"
+                                                                                        >
+                                                                                            OK
+                                                                                        </v-btn>
+                                                                                        </v-time-picker>
+                                                                                    </v-dialog>
+                                                                         
+                                                                            </v-col>
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="Beginning Trip"
+                                                                                                v-model="TripEditTicket.SpeedoBTrip"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+
+                                                                     <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-text-field
+                                                                                    v-model="TripEditTicket.AuthPassName"
+                                                                                    :disabled="!TripEditTicket.Equip_id"
+                                                                                    
+                                                                                    label="Name(s) of Authorized Passengers"
+                                                                                    outlined
+                                                                                    clearable
+                                                                                    dense
+                                                                                ></v-text-field>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-text-field class="subtitle"
+                                                                                    v-model="TripEditTicket.DisTravel"
+                                                                                    label="5. Approximate Distance Travel (km)"
+                                                                                    disabled
+                                                                                    clearable
+                                                                                    right
+                                                                                    dense
+                                                                                ></v-text-field>
+                                                                            </v-col>
+
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="End Trip"
+                                                                                                v-model="TripEditTicket.SpeedoETrip"  
+                                                                                                outlined
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <Select   clearable  :disabled="!TripEditTicket.AuthPassName" v-model="TripEditTicket.PlaceVisit" filterable size="large" placeholder="Place(s) to be Visited/Inspected">
+                                                                                        <Option  v-for="semlist in VisitedList" :value="semlist.PlaceName" :key="semlist.PlaceName">{{ semlist.PlaceName}}</Option>
+                                                                                </Select>
+                                                                            </v-col>
+
+
+                                                                             <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-text-field
+                                                                                   
+                                                                                    label="6. Gas Issued, Purchase & Consumed (L)"
+                                                                                    disabled
+                                                                                    clearable
+                                                                                    right
+                                                                                    dense
+                                                                                ></v-text-field>
+                                                                            </v-col>
+
+                                                                             <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="Distance Traveled"
+                                                                                                v-model="TripEditTicket.DistanceTraveled"
+                                                                                                @value = "DistTravel"  
+                                                                                                disabled = true
+                                                                                                outlined
+                                                                                                dense
+                                                                                              
+                                                                                                v-bind:options="optionDistTravel"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                      
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-30px;">
+                                                                            <v-col
+                                                                                cols="12"
+                                                                                sm="4"
+                                                                                md="4"
+                                                                                >
+                                                                              
+                                                                               <v-textarea
+                                                                                         v-model="TripEditTicket.Purpose"
+                                                                                        label="Purposes"
+                                                                                        auto-grow
+                                                                                        outlined
+                                                                                        :disabled="!TripEditTicket.PlaceVisit"
+                                                                                        dense
+                                                                                        rows="1"
+                                                                                       
+                                                                                        >
+                                                                                </v-textarea>
+                                                                            </v-col>
+                                                                       
+                                                                            <v-col
+                                                                                        cols="12"
+                                                                                        sm="4"
+                                                                                        md="4"
+                                                                                        >
+                                                                                   
+                                                                                    <v-text-field
+                                                                                            
+                                                                                             v-model="TripEditTicket.BalTank"
+                                                                                            label="a. Balance in Tank"
+                                                                                            disabled
+                                                                                            clearable
+                                                                                            outlined
+                                                                                            right
+                                                                                            dense
+                                                                                        ></v-text-field>
+                                                                            </v-col>
+
+
+                                                                            <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                  
+                                                                                       <v-textarea
+                                                                                                v-model="TripEditTicket.Remarks"
+                                                                                                label="Remarks"
+                                                                                                auto-grow
+                                                                                                outlined
+                                                                                                rows="3"
+                                                                                              
+                                                                                                >
+                                                                                        </v-textarea>
+                                                                                </v-col>
+                                                                     
+                                                                    </v-row>
+                                                                      
+                                                                    <v-row style="margin-top:-80px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col 
+                                                                                  
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        <span style="color:RED; !important"><b> *{{timesPerVeh}}</b></span>
+                                                                                        <v-text-field 
+                                                                                                label="b. Issued by Office"
+                                                                                                v-model="TripEditTicket.IssuedOffice" 
+                                                                                                :disabled="!TripEditTicket.ArrivalTime"
+                                                                                                @input="getAppTTravel()" 
+                                                                                                outlined
+                                                                                                type="number"
+                                                                                                required
+                                                                                                :rules="[numberRule]">
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-40px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        <span style="color:RED; !important"><b> *{{timesPerVeh}}</b></span>
+                                                                                        <v-text-field
+                                                                
+                                                                                                label="c. Add Purchase *"
+                                                                                                v-model="TripEditTicket.AddPurchase"  
+                                                                                                :disabled="!TripEditTicket.IssuedOffice"
+                                                                                                outlined
+                                                                                                @input="getAppTTravel()"
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-40px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                        <span><b> TOTAL </b></span>
+                                                                                        <v-text-field class="title"
+                                                                                              
+                                                                                                :value="totalTrip"
+                                                                                                disabled
+                                                                                                
+                                                                                                dense
+                                                                                                type="number"
+                                                                                                >
+                                                                                                
+                                                                                        </v-text-field>
+                                                                                </v-col>
+                                                                    </v-row>
+
+                                                                    <v-row style="margin-top:-10px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                     <v-text-field
+                                                                                            
+                                                                                            v-model="TripEditTicket.IssuedOffice"  
+                                                                                            label="d. Deduct"
+                                                                                            disabled
+                                                                                            outlined
+                                                                                            right
+                                                                                            dense
+                                                                                        ></v-text-field>
+                                                                                       
+                                                                                </v-col>
+                                                                    </v-row>
+                                                                    <v-row style="margin-top:-40px;">
+
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                
+                                                                                
+                                                                                </v-col>
+                                                                                <v-col
+                                                                                    cols="12"
+                                                                                    sm="4"
+                                                                                    md="4"
+                                                                                    >
+                                                                                     <v-text-field
+                                                                                            v-model="TripEditTicket.BalTank"
+                                                                                            label="e. Balance"
+                                                                                            disabled
+                                                                                            outlined
+                                                                                            right
+                                                                                            dense
+                                                                                        ></v-text-field>
+                                                                                       
+                                                                                </v-col>
+                                                                    </v-row>
+                                                                  
+
+                                                                    
                                                          </v-card-text>
                                                     
                                                 </v-card>
@@ -289,15 +1655,15 @@
                                 
                                         <div slot="footer" class="text-right">
                                                 <b-button @click="cancelItems" type="is-danger">CANCEL</b-button>
-                                                 <b-button :disabled="disabledSavedBtn" @click="SaveEditEquipment"
-                                                     type="is-info">UPDATE </b-button>
+                                                 <b-button :disabled="disabledSavedBtn" @click="SaveTripEditTicket"
+                                                     type="is-info">SAVE </b-button>
                                         </div>
              
-                        
-                         
-                        
             </Modal>
+            
 
+
+          
 
 
            
@@ -307,11 +1673,11 @@
                                 <span>Delete confirmation</span>
                             </p>
                             <div style="text-align:center">
-                                <p>Are you sure you want to delete this Item?</p>
+                                <p>Are you sure you want to delete this Trip Ticket?</p>
                             
                             </div>
                             <div slot="footer">
-                                <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="DeleteEquipment()">Delete</Button>
+                                <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="DeleteTripTicket()">Delete</Button>
                             </div>
             </Modal>
 
@@ -319,7 +1685,7 @@
           
                
       </v-app>
-</div>
+<!-- </div> -->
   
 </template>
 
@@ -337,7 +1703,7 @@
                 headers: [
                     
                     { text: 'Actions', value: 'action' ,align: 'center',width: 150,},
-                    { text: 'Id', value: 'TripT_id' ,align: 'center',width: 50,},
+                    { text: 'Control #', value: 'TripT_id' ,align: 'center',width: 50,},
                     { text: 'Date', value: 'Trip_Date' ,align: 'center',width: 150,},
                     { text: 'Product', value: 'Product', align: 'left' , width: 150,},
                     
@@ -356,57 +1722,156 @@
                     { text: 'Distance Traveled', value: 'DisTravel', align: 'left' , width: 150,},
                     { text: 'Balance in Tank', value: 'BalTank' ,align: 'center',width: 150,},
                     { text: 'IssuedbyOffice', value: 'IssuedOffice', align: 'left' , width: 150,},
+                    { text: 'AddPurchase', value: 'AddPurchase', align: 'left' , width: 150,},
+
+                    { text: 'GearOil', value: 'GearOil', align: 'left' ,},
+                    { text: 'LubriOil', value: 'LubriOil', align: 'left' ,},
+                    { text: 'Greased', value: 'Greased', align: 'left' , },
+                    { text: 'Brake_fluid', value: 'Brake_fluid', align: 'left' , },
+                    { text: 'SpeedoBegTrip', value: 'SpeedoBTrip', align: 'left' ,},
+                    { text: 'SpeedoEndTrip', value: 'SpeedoETrip', align: 'left' , },
+                  
+
+
                     { text: 'Distance Travel', value: 'DistanceTraveled', align: 'left' , width: 150,},
                     { text: 'Remarks', value: 'Remarks' ,align: 'center',width: 150,},
+
+
+                    {value: 'Prod_id' ,align: ' d-none' },
+                    {value: 'Driver_id' ,align: ' d-none' },
+                    {value: 'Equip_id' ,align: ' d-none' },
+
+
                     
                 ],
 
 
                 
                 TripTicketlist:[],
+                TripEditTicketlist:[],
+                ShowAddTripTicket:false,
+                ShowEditTripTicket:false,
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-
-
-
-                equipmentlist:[],
-                ShowAddEquipment:false,
-                ShowEditEquipment:false,
-
-                equip:{
-                    EquipType:'',
-                    EquipTime:'',
-                    EquipBal:''
-                },
-
-                equipEdit:{
-                    EquipType:'',
-                    EquipTime:'',
-                    EquipBal:'',
+                TripTicket:{
+                    Trip_Date:'',
+                    Prod_id:'',
+                    Driver_id:'',
                     Equip_id:'',
-                    EquipStatus:''
-                },
+                    AuthPassName:'',
+                    PlaceVisit:'',
+                    Purpose:'',
+                    TimeDeparture:'',
+                    TimeArr:'',
+                    DepartTime:'',
+                    ArrivalTime:'',
+                    DisTravel:'',
+                    BalTank:'',
+                    IssuedOffice:'',
+                    AddPurchase:'',
+                    GearOil:0,
+                    LubriOil:0,
+                    Greased:0,
+                    Brake_fluid:0,
+                    SpeedoBTrip:0,
+                    SpeedoETrip:0,
+                    DistanceTraveled:'',
+                    Remarks:'',
+                    Vec_id:'',
 
+                },
+                
+                 TripEditTicket:{
+                    Trip_Date:'',
+                    Prod_id:'',
+                    Driver_id:'',
+                    Equip_id:'',
+                    AuthPassName:'',
+                    PlaceVisit:'',
+                    Purpose:'',
+                    TimeDeparture:'',
+                    TimeArr:'',
+                    DepartTime:'',
+                    ArrivalTime:'',
+                    DisTravel:'',
+                    BalTank:'',
+                    IssuedOffice:'',
+                    AddPurchase:'',
+                    GearOil:0,
+                    LubriOil:0,
+                    Greased:0,
+                    Brake_fluid:0,
+                    SpeedoBTrip:0,
+                    SpeedoETrip:0,
+                    DistanceTraveled:'',
+                    Remarks:'',
+                    Vec_id:'',
+
+                },
+            
+
+                menuadd: false,
+
+                menuEdit:false,
+                pickerDate: '1995-1-1',
+
+                dialogTimeDept:false,
+                dialogTimeArr:false,
+
+                dialogTimeDeptBack:false,
+                dialogTimeArrBack:false,
+
+                 modalDept: false,
+                 modalArr: false,
+                 modalDeptBack: false,
+                 modalArrBack: false,
+
+
+                 ProductList:[],
+                 DriverList:[],
+                 VechicleList:[],
+                 VisitedList:[],
+                 timesPerVeh:0,
+                 fuelCap:'',
+
+                  optionDistTravel: {
+                    suffix: "KM",
+                    length: 11,
+                    precision: 2
+                    },
+                
+                 deleteItem:'',
+                showDeleteModal:false,
+                isDeleting:false,
+                showEditModal:false,
+
+
+                loading: false,
+
+                    
+
+               
+
+
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                  options: {
                     suffix: "L",
                     length: 11,
@@ -418,162 +1883,10 @@
                 return true
                 },
 
-                deleteItem:'',
-                showDeleteModal:false,
-                isDeleting:false,
-                showEditModal:false,
-
-
-                loading: false,
-
+               
                 selected: [],
                 search: '',
 
-              
-
-
-
-
-
-
-                nameTES2:"TES-2 FORM" + "(" + this.TermNum + ")" + ".xls",
-
-                json_fields: {
-                    "Student ID": "StudID",
-                    "TES Award #": "tesAwardNo",
-                    "LastName": "StudLName",
-                    "Firstname": "StudFName",
-                    "Middle Name": "MI",
-                    "Sex": "sexI",
-                    "Birthdate": "StudBDate",
-                    "Degree Program": "CDesc",
-                    "Year Level": "EnrYear",
-                    "Total Units": "EnrTUnits",
-                    "ZIP Code": "StudPZip",
-                    "E-mail Address": "email",
-                    "Phone Number": "StudCNum",
-
-
-                    },
-
-                 json_fields_payroll: {
-                    "TES Award #": "tesAwardNo",
-                    "Student ID": "StudID",
-                    "LastName": "StudLName",
-                    "Firstname": "StudFName",
-                    "Middle Name": "MI",
-                    "Degree Program": "CDesc",
-                     "Year Level": "EnrYear",
-                    // "Sex": "sexI",
-                    // "Birthdate": "StudBDate",
-                    
-                   
-                    // "Total Units": "EnrTUnits",
-                    // "ZIP Code": "StudPZip",
-                    // "E-mail Address": "email",
-                    // "Phone Number": "StudCNum",
-
-
-                    },
-
-
-             
-                 
-
-
-                 singleExpand: true,
-                 expanded: [],
-
-                semlists:[],
-
-                showviewModal:false,
-                showCORModal:false,
-                showGradeModal:false,
-
-                size: '',
-                type: null,
-                passiveType: null,
-                isRounded: false,
-                isOutlined: true,
-                leftLabel: true,
-
-                TermNum:'',
-                TermDesc:'',
-
-                studInfo:[],
-                idnum:null,
-                studname:null,
-                crse:null,
-                section:null,
-                yr:0,
-                dEnrol:'',
-
-                 AssLecTot:0,
-                AssLabTot:0,
-                OtherSchFee:0,
-                AssOldBal:0,
-                AssOthTot:0,
-                AssMiscTot:0,
-                AssTotDue:0,
-
-                gradelists: [],
-                gradelists1:[],
-                TotUnits:0,
-
-
-                
-                showForwardIndiModal:false,
-                 showForwardModal:false,
-                 
-                 
-
-                 isprint:false,
-
-                 data:{
-                        ActiveTerm:'',
-                        ActiveTermDesc:'',
-                        Institute:'',
-                    },
-
-                forwardStud:'',
-                student:{
-                        StudID:'',
-                        TESGrant:'',
-                        StudLName:'',
-                        StudFName:'',
-                        EnrCourse:'',
-                        EnrYear:'',
-
-
-                },
-
-                GWA:0,
-                GWAFinal:0,
-                showValue1: false,
-
-                index:'',
-
-
-
-              
-                
-
-                      studentList:[],
-
-                        categories: [],
-                        
-                        total: 0,
-                        
-                        pagination: {},
-                       
-                        rowsPerPageItems: [5, 10, 20, 50, 100],
-
-                        allowForward:0,
-
-                        grant:0,
-
-                        studDtls:[],
-                    
 
             }
         },
@@ -582,12 +1895,7 @@
 
         watch: {
 
-                //  pagination() {
-                //         this.getCategoriesByPagination();
-                //     },
-                // search() {
-                //         this.getCategoriesByPagination();
-                //     }
+               
         },
 
         mounted(){
@@ -596,13 +1904,61 @@
 
          computed: {
 
+
+                     totalTrip() {
+                        return parseFloat(this.TripTicket.BalTank) + parseFloat(this.TripTicket.AddPurchase) + parseFloat(this.TripTicket.IssuedOffice);
+                        },
+
+                    AppDistanceTravel() {
+                        return parseFloat(this.TripTicket.IssuedOffice) * parseFloat(this.TripTicket.ba);
+                        },
+
+
+                    getAppTTravel(){
+                        return this.TripTicket.DisTravel = (parseFloat(this.TripTicket.IssuedOffice) * parseFloat(this.timesPerVeh) +  parseFloat(this.TripTicket.AddPurchase) * parseFloat(this.timesPerVeh));
+                    },
+
+
+                    getAppTTravel(){
+                        return this.TripTicket.DisTravel = (parseFloat(this.TripTicket.IssuedOffice) * parseFloat(this.timesPerVeh) +  parseFloat(this.TripTicket.AddPurchase) * parseFloat(this.timesPerVeh));
+                    },
+
+
+                    DistTravel(){
+                        return this.TripTicket.DistanceTraveled =   parseFloat(this.TripTicket.SpeedoETrip)  - parseFloat(this.TripTicket.SpeedoBTrip);
+                    },
+
+
+                    
+
+
+
+
+
                      disabledSavedBtn(){
                         
-                            if(this.ShowAddEquipment ===true){
+                        
 
-                                if (!this.equip.EquipType || 
-                                                !this.equip.EquipTime ||
-                                                !this.equip.EquipBal ){
+                            if(this.ShowAddTripTicket ===true){
+
+                                if (!this.TripTicket.Trip_Date ||
+                                            !this.TripTicket.Prod_id ||
+                                            !this.TripTicket.Driver_id ||
+                                            !this.TripTicket.Equip_id ||
+                                            !this.TripTicket.AuthPassName ||
+                                            !this.TripTicket.PlaceVisit ||
+                                            !this.TripTicket.Purpose ||
+                                            !this.TripTicket.TimeDeparture ||
+                                            !this.TripTicket.TimeArr ||
+                                            !this.TripTicket.DepartTime ||
+                                            !this.TripTicket.ArrivalTime ||
+                                            !this.TripTicket.DisTravel ||
+                                            !this.TripTicket.BalTank ||
+                                            !this.TripTicket.IssuedOffice ||
+                                            !this.TripTicket.AddPurchase ||
+                                          
+                                            !this.TripTicket.Remarks
+                                             ){
                                                         return true;
 
                                                 }else{
@@ -612,11 +1968,26 @@
                                           
                             }
 
-                            if(this.ShowEditEquipment ===true){
+                            if(this.ShowEditTripTicket ===true){
 
-                                if (!this.equipEdit.EquipType || 
-                                                !this.equipEdit.EquipTime ||
-                                                !this.equipEdit.EquipBal ){
+                                if (!this.TripEditTicket.Trip_Date ||
+                                            !this.TripEditTicket.Prod_id ||
+                                            !this.TripEditTicket.Driver_id ||
+                                            !this.TripEditTicket.Equip_id ||
+                                            !this.TripEditTicket.AuthPassName ||
+                                            !this.TripEditTicket.PlaceVisit ||
+                                            !this.TripEditTicket.Purpose ||
+                                            !this.TripEditTicket.TimeDeparture ||
+                                            !this.TripEditTicket.TimeArr ||
+                                            !this.TripEditTicket.DepartTime ||
+                                            !this.TripEditTicket.ArrivalTime ||
+                                            !this.TripEditTicket.DisTravel ||
+                                            !this.TripEditTicket.BalTank ||
+                                            !this.TripEditTicket.IssuedOffice ||
+                                            !this.TripEditTicket.AddPurchase ||
+                                          
+                                            !this.TripEditTicket.Remarks
+                                             ){
                                                         return true;
 
                                                 }else{
@@ -658,119 +2029,288 @@
                 },
 
      methods:{
+        
 
-
-          showEditingModal(Equip_id,EquipType,EquipTimes,EquipBalTank,EquipStatus){
-                let obj = {
-                    Equip_id : Equip_id ,
-                    EquipType : EquipType,
-                    EquipTime: EquipTimes,
-                    EquipBal: EquipBalTank,
-                    EquipStatus: EquipStatus,
-            }
-                this.equipEdit=obj  
-                this.ShowEditEquipment = true       
-
-               
-        },
-
-
-
-        async DeleteEquipment(){
-               const res = await this.callApi('post', 'app/DeleteEquipment/' + this.deleteItem)
-                if(res.status===200){
-                
-                
-                        this.$Loading.finish();
-                        this.success2('Equipment successfully deleted!') 
-                         this.getEquipList()
-                        this.showDeleteModal = false
-                        this.isDeleting= false
-                    
-                    }else{
-                        this.$Loading.error();
-                        this.danger()
-                        this.isDeleting= false
+        showEditingModal(TripT_id,Trip_Date,Product,VehType,VehPlateNum,VehModel,DriversName,VehOffice,AuthPassName,PlaceVisit,
+                            Purpose,TimeDeparture,TimeArr,DepartTime,ArrivalTime,DisTravel,BalTank,IssuedOffice,GearOil,LubriOil,
+                            Greased,Brake_fluid,SpeedoBTrip,SpeedoETrip,DistanceTraveled,Remarks,Prod_id,Driver_id,Equip_id,AddPurchase){
+                        let obj = {
+                            TripT_id : TripT_id ,
+                            Trip_Date : Trip_Date ,
+                            Product : Product ,
+                            VehType : VehType ,
+                            VehPlateNum : VehPlateNum ,
+                            VehModel : VehModel ,
+                            DriversName : DriversName ,
+                            VehOffice : VehOffice ,
+                            AuthPassName : AuthPassName ,
+                            PlaceVisit : PlaceVisit ,
+                            Purpose : Purpose ,
+                            TimeDeparture : TimeDeparture ,
+                            TimeArr : TimeArr ,
+                            DepartTime : DepartTime ,
+                            ArrivalTime : ArrivalTime ,
+                            DisTravel : DisTravel ,
+                            BalTank : BalTank ,
+                            IssuedOffice : IssuedOffice ,
+                            GearOil : GearOil ,
+                            LubriOil : LubriOil ,
+                            Greased : Greased ,
+                            Brake_fluid : Brake_fluid ,
+                            SpeedoBTrip : SpeedoBTrip ,
+                            SpeedoETrip : SpeedoETrip ,
+                            DistanceTraveled : DistanceTraveled ,
+                            Remarks : Remarks ,
+                            Prod_id : Prod_id ,
+                            Driver_id : Driver_id ,
+                            Equip_id : Equip_id ,
+                            AddPurchase:AddPurchase,
                     }
+                        this.TripEditTicket=obj  
+                        this.getProduct()
+                        this.getPlaceVisitedEdit()
+                        this.getVehicle()
+                        this.getDriver()
+                        
+                        this.ShowEditTripTicket = true       
+
+               
+        },
+
+
+        async SaveTripTicket(){
+          this.isDeleting= true
+               
+            const res = await this.callApi('post', 'app/SaveTripTicket' , this.TripTicket)
+            if(res.status===200){
+            
+               
+                    this.$Loading.finish();
+                    
+                    this.success2('Trip Ticket successfully saved!') 
+                    this.ShowAddTripTicket=false
+                    this.getTripTicketList()
+                    this.cancelItems()
+                    
+                    this.isDeleting= false
+                  
+                   
+                   
+
+                }else{
+                    this.$Loading.error();
+                    this.danger()
+                     this.isDeleting= false
+                }
+     
+        },
+
+
+        async SaveTripEditTicket(){
+          this.isDeleting= true
+               
+            const res = await this.callApi('post', 'app/SaveTripEditTicket' , this.TripEditTicket)
+            if(res.status===200){
+            
+               
+                    this.$Loading.finish();
+                    
+                    this.success2('Trip Ticket successfully Edited!') 
+                    this.ShowEditTripTicket=false
+                    this.getTripTicketList()
+                    this.cancelItems()
+                    
+                    this.isDeleting= false
+                  
+                   
+                   
+
+                }else{
+                    this.$Loading.error();
+                    this.danger()
+                     this.isDeleting= false
+                }
+     
+        },
+
+
+
+        
+
+         async getVehicleSpecEdit(){
+            const res = await  axios.get('/api/getVehicleSpec/' + this.TripEditTicket.Equip_id)
+            if(res.status==200){
+                if(res.data.length===0){
+                    this.$Loading.error();
+                    this.danger('No Records found!')
+                   
+                }else{
+                    
+                    this.timesPerVeh = parseInt(res.data[0].EquipTimes)
+                    this.fuelCap =  parseInt(res.data[0].VehFuelCap)
+                    this.TripEditTicket.BalTank = res.data[0].EquipBalTank
+                    this.$Loading.finish();
+                }
                 
+            }else{
+                    console.log(res.data)
+            }
         },
 
 
-        showDeletingModal(Equip_id){
-          this.deleteItem = Equip_id
-          this.showDeleteModal = true
-        },
-
-
-
-        async SaveEquipment(){
-          this.isDeleting= true
-               
-            const res = await this.callApi('post', 'app/SaveEquipment' , this.equip)
-            if(res.status===200){
-            
-               
-                    this.$Loading.finish();
-                    this.ShowAddEquipment=false
-                    this.success2('Equipment successfully saved!') 
-                    this.getEquipList()
-                    this.isDeleting= false
-                    this.equip.EquipBal=''
-                    this.equip.EquipTime=''
-                    this.equip.EquipType=''
-                   
-                   
-
-                }else{
+         async getPlaceVisitedEdit(){
+            this.getVehicleSpecEdit()
+            const res = await  axios.get('/api/getPlaceVisited')
+            if(res.status==200){
+                if(res.data.length===0){
                     this.$Loading.error();
-                    this.danger()
-                     this.isDeleting= false
-                }
-     
-        },
-
-        async SaveEditEquipment(){
-          this.isDeleting= true
-               
-            const res = await this.callApi('post', 'app/SaveEditEquipment' , this.equipEdit)
-            if(res.status===200){
-            
-               
-                    this.$Loading.finish();
-                    this.ShowEditEquipment=false
-                    this.success2('Equipment successfully Edited!') 
-                    this.getEquipList()
-                    this.isDeleting= false
-                    this.equipEdit.EquipBal=''
-                    this.equipEdit.EquipTime=''
-                    this.equipEdit.EquipType=''
-                   
-                   
-
+                    this.danger('No Records found!')
+                    this.VisitedList = res.data;
                 }else{
-                    this.$Loading.error();
-                    this.danger()
-                     this.isDeleting= false
+                    this.VisitedList = res.data;
+                    
+                    this.$Loading.finish();
                 }
-     
+                
+            }else{
+                    console.log(res.data)
+            }
+        },
+
+
+        async getPlaceVisited(){
+            this.getVehicleSpec()
+            const res = await  axios.get('/api/getPlaceVisited')
+            if(res.status==200){
+                if(res.data.length===0){
+                    this.$Loading.error();
+                    this.danger('No Records found!')
+                    this.VisitedList = res.data;
+                }else{
+                    this.VisitedList = res.data;
+                    
+                    this.$Loading.finish();
+                }
+                
+            }else{
+                    console.log(res.data)
+            }
+        },
+
+
+        async getVehicle(){
+            const res = await  axios.get('/api/getVehicle')
+            if(res.status==200){
+                if(res.data.length===0){
+                    this.$Loading.error();
+                    this.danger('No Records found!')
+                    this.VechicleList = res.data;
+                }else{
+                    this.VechicleList = res.data;
+                   
+                    this.$Loading.finish();
+                }
+                
+            }else{
+                    console.log(res.data)
+            }
+        },
+
+        async getDriver(){
+            const res = await  axios.get('/api/getDriver')
+            if(res.status==200){
+                if(res.data.length===0){
+                    this.$Loading.error();
+                    this.danger('No Records found!')
+                    this.DriverList = res.data;
+                }else{
+                    this.DriverList = res.data;
+                    this.$Loading.finish();
+                }
+                
+            }else{
+                    console.log(res.data)
+            }
+        },
+
+        async getProduct(){
+            const res = await  axios.get('/api/getProduct')
+            if(res.status==200){
+                if(res.data.length===0){
+                    this.$Loading.error();
+                    this.danger('No Records found!')
+                    this.ProductList = res.data;
+                }else{
+                    this.ProductList = res.data;
+                    this.$Loading.finish();
+                }
+                
+            }else{
+                    console.log(res.data)
+            }
         },
 
 
 
-        cancelItems(){
-            this.equip.EquipType=''
-            this.equip.EquipTime=''
-            this.equip.EquipBal=''
+            cancelItems(){
+
+                    this.TripTicket.Trip_Date=''
+                    this.TripTicket.Prod_id=''
+                    this.TripTicket.Driver_id=''
+                    this.TripTicket.Equip_id=''
+                    this.TripTicket.AuthPassName=''
+                    this.TripTicket.PlaceVisit=''
+                    this.TripTicket.Purpose=''
+                    this.TripTicket.TimeDeparture=''
+                    this.TripTicket.TimeArr=''
+                    this.TripTicket.DepartTime=''
+                    this.TripTicket.ArrivalTime=''
+                    this.TripTicket.DisTravel=''
+                    this.TripTicket.BalTank=''
+                    this.TripTicket.IssuedOffice=''
+                    this.TripTicket.AddPurchase=''
+                    this.TripTicket.GearOil=0
+                    this.TripTicket.LubriOil=0
+                    this.TripTicket.Greased=0
+                    this.TripTicket.Brake_fluid=0
+                    this.TripTicket.SpeedoBTrip=0
+                    this.TripTicket.SpeedoETrip=0
+                    this.TripTicket.DistanceTraveled=0
+                    this.TripTicket.Remarks=''
+                    this.TripTicket.Vec_id=''
+
+                    this.TripEditTicket.Trip_Date=''
+                    this.TripEditTicket.Prod_id=''
+                    this.TripEditTicket.Driver_id=''
+                    this.TripEditTicket.Equip_id=''
+                    this.TripEditTicket.AuthPassName=''
+                    this.TripEditTicket.PlaceVisit=''
+                    this.TripEditTicket.Purpose=''
+                    this.TripEditTicket.TimeDeparture=''
+                    this.TripEditTicket.TimeArr=''
+                    this.TripEditTicket.DepartTime=''
+                    this.TripEditTicket.ArrivalTime=''
+                    this.TripEditTicket.DisTravel=''
+                    this.TripEditTicket.BalTank=''
+                    this.TripEditTicket.IssuedOffice=''
+                    this.TripEditTicket.AddPurchase=''
+                    this.TripEditTicket.GearOil=0
+                    this.TripEditTicket.LubriOil=0
+                    this.TripEditTicket.Greased=0
+                    this.TripEditTicket.Brake_fluid=0
+                    this.TripEditTicket.SpeedoBTrip=0
+                    this.TripEditTicket.SpeedoETrip=0
+                    this.TripEditTicket.DistanceTraveled=0
+                    this.TripEditTicket.Remarks=''
+                    this.TripEditTicket.Vec_id=''
 
 
-            this.equipEdit.EquipType=''
-            this.equipEdit.EquipTime=''
-            this.equipEdit.EquipBal=''
+                    this.ShowEditTripTicket = false
+                    this.ShowAddTripTicket = false
         },
 
 
-
-        async getTripTicketList(){
+         async getTripTicketList(){
             const res = await  axios.get('/api/getTripTicketList')
             if(res.status==200){
                 if(res.data.length===0){
@@ -788,504 +2328,30 @@
         },
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-         TES2form(){
-             return ("TES-2 FORM(" + this.TermNum + ")" + ".xls");
-         },
-          TES3aform(){
-             return ("TES-3a FORM(" + this.TermNum + "-PWD)" + ".xls");
-         },
-
-        TES3bform(){
-             return ("TES-3b FORM(" + this.TermNum + ")" + ".xls");
-         },
-
-
-         
-        
-
-          getImgUrl(path){
-                        this.index = path
-                        
-                            if (!this.index){
-                                return   '/images/nobody.jpg'
-                            }else{
-                                return ("http://mygadtc.gadtc.edu.ph/" + this.index);
-                            }
-
-                            
-                        
-                    },
-
-
-          getStudTotUnits(){
-              
-                 axios('/api/getStudTotUnits2/' + this.TermNum + '/' + this.student.StudID)
-                    .then(res=> {
-                        if(res.data.length===0){
-                            this.AssLecTot= 0
-                            this.AssLabTot= 0
-                            
-                            this.AssOldBal= 0
-                            this.OtherSchFee= 0
-                            this.AssTotDue=0
-                             this.showCORModal = true
-                        }else{
-                            this.TotUnits = res.data[0].EnrTUnits
-                            this.section= res.data[0].EnrSec
-
-                            this.AssLecTot= new Intl.NumberFormat().format(res.data[0].AssLecTot)
-                            this.AssLabTot= new Intl.NumberFormat().format(res.data[0].AssLabTot)
-                        
-                            this.AssOldBal= new Intl.NumberFormat().format(res.data[0].AssOldBal)
-
-                            this.AssOthTot= res.data[0].AssOthTot
-                            this.AssMiscTot=res.data[0].AssMiscTot
-
-                            this.OtherSchFee= (Number(this.AssMiscTot)+Number(this.AssOthTot));
-
-                           this.OtherSchFee= new Intl.NumberFormat().format(this.OtherSchFee);
-                           this.AssTotDue=new Intl.NumberFormat().format(res.data[0].AssTotDue)
-                            // this.showCORModal = false
-                            // this.showGradeModal=false;
-
-                       // this.GWA= this.TotUnits
-
-                        // console.log(this.TotUnits);
-                    }
-                },(error)=>{
-                        console.log(error);
-                 })
-
-
-            },
-
-
-
-        async gettesStud(){
-            const res = await  axios.get('/api/getTesStudents/' + this.TermNum)
-            if(res.status==200){
-                if(res.data.length===0){
-                    // console.log('sdsd')
-                    this.$Loading.error();
-                    this.danger('No Records found!')
-                    
-                    this.studentList = res.data;
-                    // this.gradelists = res.data;
-                }else{
-                    // console.log(res.data)
-                    this.studentList = res.data;
-                    this.TermDesc=res.data[0].TermDesc;
-                    // this.gradelists = res.data;
-                    this.$Loading.finish();
-                }
+         async DeleteTripTicket(){
+               const res = await this.callApi('post', 'app/DeleteTripTicket/' + this.deleteItem)
+                if(res.status===200){
                 
-    
-            }else{
-                    console.log(res.data)
-            }
-        },
-
-
-        getSem(){
-            // this.token = window.Laravel.csrfToken
-            axios.get('/api/getSem2')
-                .then(function (res){
-                    return res.data;
-                })
-                .catch(function (error){
-                    console.log(error.response);
-                })
-                .then(res=>{
-                    this.semlists = res;
-                    // this.getStudGrade();
-                })
-        },
-
-        showForwardModalView(){
                 
-                this.showForwardModal = true
-                
-        },
-
-        showForwardIndiModalView(StudID,TESGrant,StudLName,StudFName,EnrCourse,EnrYear){
-                 let obj = {
-                    StudID : StudID ,
-                    TESGrant : TESGrant,
-                    StudLName: StudLName,
-                    StudFName: StudFName,
-                    EnrCourse: EnrCourse,
-                    EnrYear: EnrYear,
-
-                }
-                this.student=obj
-                this.forwardStud = StudID
-                this.showForwardIndiModal = true
-                
-        },
-
-         showEditModalViewCOR(StudID,TESGrant,StudLName,StudFName,EnrCourse,EnrYear){
-                let obj = {
-                    StudID : StudID ,
-                    TESGrant : TESGrant,
-                    StudLName: StudLName,
-                    StudFName: StudFName,
-                    EnrCourse: EnrCourse,
-                    EnrYear: EnrYear,
-
-            }
-                this.student=obj
-
-                this.getStudCOR()
-                // this.getStudTotUnits()
-               
-                
-        },
-
-
-        showEditModalViewGrade(StudID,TESGrant,StudLName,StudFName,EnrCourse,EnrYear){
-                let obj = {
-                    StudID : StudID ,
-                    TESGrant : TESGrant,
-                    StudLName: StudLName,
-                    StudFName: StudFName,
-                    EnrCourse: EnrCourse,
-                    EnrYear: EnrYear,
-
-            }
-                this.student=obj
-
-                this.getStudGrade()
-                // this.getStudTotUnits()
-               
-                
-        },
-
-        view(){
-
-            this.isprint= true;
-            this.showCORModal=false;
-            this.showviewModal=true
-        },
-        
-
-         printCOR(){
-                
-                this.showviewModal=false
-                this.print_enrolment();
-                // window.print('printable'); 
-               
-            },
-        
-        print_enrolment(){
-
-                // console.log('ss');
-                window.print('printable'); 
-                this.isprint= false;
-
-                
-        },
-
-        //  printCOR(){    
-                    
-        //             this.isprint= true;
-        //             // this.$htmlToPaper('printable');  
-        //             window.print('printable');
-        //             this.isprint= false;
-                
-        //         },
-
-
-
-
-        async removeGrantee(StudID){
-          this.isDeleting= true
-               
-            const res = await this.callApi('post', 'app/removeGrantee/' + StudID + '/' + this.TermNum)
-            if(res.status===200){
-            
-               
-                    this.$Loading.finish();
-                    this.success2('TES Grantee successfully removed from this semester!') 
-                    // this.showForwardModal=false
-                    this.gettesStud()
-                    this.isDeleting= false
-                
-                }else{
-                    this.$Loading.error();
-                    this.danger()
-                     this.isDeleting= false
-                }
-     
-        },
-
-            //forward indi grantee
-        async forwardIndiGrantee(){
-          this.isDeleting= true
-               
-            const res = await this.callApi('post', 'app/forwardIndiGrantee/' + this.forwardStud)
-            if(res.status===200){
-            
-               
-                    this.$Loading.finish();
-                    this.success2('TES Grantee has been forwarded successfully!') 
-                    this.showForwardIndiModal=false
-                    this.isDeleting= false
-                    this.student.StudID=''
-                    this.student.StudLName=''
-                    this.student.TESGrant=''
-                    this.student.StudFName=''
-                    this.student.EnrCourse=''
-                    this.student.EnrYear=''
-                   
-
-                }else{
-                    this.$Loading.error();
-                    this.danger()
-                     this.isDeleting= false
-                }
-     
-        },
-
-       
-
-        async EditGrantees(){
-          this.isDeleting= true
-
-            if(this.showValue1===true){
-                this.grant = 1
-            }else{
-                this.grant = 0
-            }
-               
-            const res = await this.callApi('post', 'app/EditGrantees/' + this.student.StudID + '/'  + this.grant)
-            if(res.status===200){
-            
-               
-                    this.$Loading.finish();
-                    this.showEditModal=false
-                    this.success2('TES Grantee has been edited successfully!') 
-                    this.getCategoriesByPagination()
-                    
-                    this.isDeleting= false
-
-                    this.student.StudID=''
-                    this.student.StudLName=''
-                    this.student.TESGrant=''
-                    this.student.StudFName=''
-                    this.student.EnrCourse=''
-                    this.student.EnrYear=''
-                    this.grant=''
-                
-                }else{
-                    this.$Loading.error();
-                    this.danger()
-                     this.isDeleting= false
-                }
-     
-        },
-
-        
-
-        // getCategoriesByPagination() {
-        //     this.loading = true;
-        //     if (this.search) {
-        //         axios.get(`/student-filter?query=${this.search}&page=${this.pagination.page}&per_page=${this.pagination.rowsPerPage}`)
-        //             .then(res => {
-        //                 this.categories = res.data.data;
-        //                 this.total = res.data.meta.total;
-        //             })
-        //             .catch(err => console.log(err.response.data))
-        //             .finally(() => this.loading = false);
-        //     }
-           
-        //     if(!this.search) {
-        //         axios.get(`/getTesStudents?page=${this.pagination.page}&per_page=${this.pagination.rowsPerPage}&term=${this.TermNum}`)
-        //             .then(res => {
-        //                 this.categories = res.data.data;
-        //                 this.total = res.data.meta.total;
-        //             })
-        //             .catch(err => console.log(err.response.data))
-        //             .finally(() => this.loading = false);
-        //     }
-        // },
-
-          getActiveTerm(){
-                this.token = window.Laravel.csrfToken
-                axios('/api/getActiveTerm')
-                    .then(res=> {
-                        this.data.ActiveTerm = res.data[0].TermNum
-                        this.data.ActiveTermDesc =res.data[0].TermDesc
-                       
-                        
-                    },(error)=>{
-                        console.log(error);
-                 })
-            },
-
-        checkForward(){
-                this.token = window.Laravel.csrfToken
-                axios('/api/checkForward')
-                    .then(res=> {
-                        this.allowForward = res.data[0].forwardOpen
-                       
-                       
-                        
-                    },(error)=>{
-                        console.log(error);
-                 })
-            },
-
-
-
-
-
-        //     getStudents(){
-        //     // const res = await  axios.get('/api/getStudents')
-        //  axios.get('/api/getStudents')
-        //           .then(function (res){
-        //               return res.data;
-        //           })
-        //           .catch(function (error){
-        //               console.log(error.response);
-        //           })
-        //           .then(res=>{
-                      
-            
-        //               this.datalist = res;
-                      
-        //           })
-        // },
-
-
-        
-        async getStudInfo({item}){
-                const res = await  axios.get('/api/getStudInfoDtls/'  + item.StudID)
-                if(res.status==200){
-                    if(res.data.length===0){
-                    
-                        this.$Loading.error();
-                        this.danger('No Records found!')
-                        this.studDtls = res.data;
-                        
-                    }else{
-                        // console.log(res.data)
-                        this.studDtls = res.data;
-                       
-                       
                         this.$Loading.finish();
-                        this.ishidden=true;
-                
-                    }
+                        this.success2('Trip Ticket successfully deleted!') 
+                         this.getTripTicketList()
+                        this.showDeleteModal = false
+                        this.isDeleting= false
                     
-        
-                }else{
-                        console.log(res.data)
-                }
-            },
-
-
-        async getStudCOR(){
-                const res = await  axios.get('/api/getStudCOR/' + this.TermNum + '/' + this.student.StudID)
-                if(res.status==200){
-                    if(res.data.length===0){
-                        // console.log('sdsd')
-                        this.$Loading.error();
-                        this.danger('No Records found!')
-                        this.gradelists = res.data;
-                        
-                        
-                        this.getStudTotUnits();
                     }else{
-                        // console.log(res.data)
-                        this.gradelists = res.data;
-                        this.showCORModal = true
-                        this.showGradeModal=false
-                        
-
-                        // this.TermDesc=res.data[0].TermDesc;
-                        this.$Loading.finish();
-                        this.ishidden=true;
-                
-                        this.getStudTotUnits();
-                       
-                    }
-                    
-        
-                }else{
-                        console.log(res.data)
-                }
-            },
-
-
-            
-             async getStudGrade(){
-                const res = await  axios.get('/api/getStudGrade/' + this.TermNum + '/' + this.student.StudID)
-                if(res.status==200){
-                    if(res.data.length===0){
-                        // console.log('sdsd')
                         this.$Loading.error();
-                        this.danger('No Records found!')
-                        this.gradelists1 = res.data;
-                        this.getStudTotUnits();
-                        this.GWAFinal="0.00"
-                    }else{
-                        this.gradelists1 = res.data;
-                        this.$Loading.finish();
-                  
-
-                        this.getStudTotUnits();
-                        this.getStudGWA();
+                        this.danger()
+                        this.isDeleting= false
                     }
-                    
-        
-                }else{
-                        console.log(res.data)
-                }
-            },
-
-
-             getStudGWA(){
-                  this.GWAFinal="0.00"
-                 axios('/api/getStudGWA/' + this.TermNum + '/' + this.student.StudID)
-                    .then(res=> {
-                        if(res.data===0){
-                            this.GWA = 0
-                            this.showGradeModal=true
-                        }else{
-                            this.GWA = res.data[0].gwa;
-                            this.showCORModal=false;
-                            this.showGradeModal=true
-                           // this.GWA=
-
-                           this.GWAFinal = parseFloat(this.GWA).toFixed(2)
                 
-                            // this.GetGWA()
-                        }
-                        
-
-                       // this.GWA= this.TotUnits
-
-                        // console.log(this.TotUnits);
-                    },(error)=>{
-                        console.log(error);
-                 })
-
-            },
+        },
 
 
-
+        showDeletingModal(TripT_id){
+          this.deleteItem = TripT_id
+          this.showDeleteModal = true
+        },
 
 
             

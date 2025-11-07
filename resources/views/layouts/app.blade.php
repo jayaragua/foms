@@ -90,9 +90,9 @@
     
     <div class="content-wrapper">
         <div id="app">
-            <section class="content">
+            <!-- <section class="content"> -->
                 @yield('content')
-            </section>
+            <!-- </section> -->
         </div>
     </div>
 

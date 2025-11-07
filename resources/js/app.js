@@ -73,8 +73,10 @@ Vue.component("downloadExcel", JsonExcel);
 Vue.mixin(common)
 
 Vue.component('equip', require('./components/faculty/equipments.vue').default);
-Vue.component('trips', require('./components/faculty/triptickets.vue').default);
 
+
+Vue.component('trips', require('./components/faculty/triptickets.vue').default);
+Vue.component('vec', require('./components/faculty/vehicle.vue').default);
 
 
 

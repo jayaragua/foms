@@ -49,11 +49,10 @@
 
           <li class="nav-item has-treeview">
             <a href="/trip-ticket" class="nav-link">
-            <i class="nav-icon fas fa-car"></i>
+            <i class="nav-icon fa fa-ticket"></i>
               <p>
                 Trip Ticket
                 
-              
               </p>
             </a>
 
@@ -64,10 +63,10 @@
           
 
           <li class="nav-item has-treeview">
-            <a href="/equipment" class="nav-link">
-              <i class="nav-icon fas fa-id-card-alt"></i>
+            <a href="/vehicle" class="nav-link">
+              <i class="nav-icon fas fa-car"></i>
               <p>
-                Equipment
+                Vehicle
                 
               
               </p>
@@ -120,6 +119,21 @@
               </p>
             </a>
            
+          </li>
+
+
+          <li class="nav-item has-treeview">
+            <a href="/equipment" class="nav-link">
+              <i class="nav-icon fas fa-id-card-alt"></i>
+              <p>
+                Set Equipment
+                
+              
+              </p>
+            </a>
+
+                
+
           </li>
 
            <li class="nav-item">

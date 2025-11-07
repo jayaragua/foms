@@ -33,8 +33,21 @@ Route::post('app/SaveEditEquipment', [App\Http\Controllers\equipmentController::
 // trip ticket
 Route::get('trip-ticket', [App\Http\Controllers\tripTicketController::class, 'viewTripTicket']);
 Route::get('/api/getTripTicketList', [App\Http\Controllers\tripTicketController::class, 'getTripTicketList']);
+Route::get('/api/getProduct', [App\Http\Controllers\tripTicketController::class, 'getProduct']);
+Route::get('/api/getDriver', [App\Http\Controllers\tripTicketController::class, 'getDriver']);
+Route::get('/api/getVehicle', [App\Http\Controllers\tripTicketController::class, 'getVehicle']);
+Route::get('/api/getPlaceVisited', [App\Http\Controllers\tripTicketController::class, 'getPlaceVisited']);
+Route::get('/api/getVehicleSpec/{id}', [App\Http\Controllers\tripTicketController::class, 'getVehicleSpec']);
+Route::post('app/SaveTripTicket', [App\Http\Controllers\tripTicketController::class, 'SaveTripTicket']);
+Route::post('app/SaveTripEditTicket', [App\Http\Controllers\tripTicketController::class, 'SaveTripEditTicket']);
+Route::post('app/DeleteTripTicket/{id}', [App\Http\Controllers\tripTicketController::class, 'DeleteTripTicket']);
 
-
+// Vehicle
+Route::get('vehicle', [App\Http\Controllers\vehicleController::class, 'viewVehicle']);
+Route::get('/api/getVecList', [App\Http\Controllers\vehicleController::class, 'getVecList']);
+Route::post('app/SaveEquipment', [App\Http\Controllers\vehicleController::class, 'SaveEquipment']);
+Route::post('app/DeleteEquipment/{id}', [App\Http\Controllers\vehicleController::class, 'DeleteEquipment']);
+Route::post('app/SaveEditEquipment', [App\Http\Controllers\vehicleController::class, 'SaveEditEquipment']);
 
 //user
 //user controller
